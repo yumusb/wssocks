@@ -1,0 +1,28 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+  schedule:
+    - cron:  '0 0 1 * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      env:
+       DOCKER_COM_PASS: ${{ secrets.DOCKER_COM_PASS }}
+      run: |
+       cd build
+       git clone https://github.com/genshen/wssocks.git
+       tagname="yumusb/wssocks:$(date +%s)"
+       docker build ./wssocks/ --file Dockerfile --tag $tagname
+       docker tag $tagname yumusb/wssocks:latest
+       docker login -u yumusb -p $DOCKER_COM_PASS
+       docker push $tagname
+       docker push yumusb/wssocks:latest
