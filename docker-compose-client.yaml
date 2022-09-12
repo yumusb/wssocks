@@ -1,0 +1,10 @@
+version: '2'
+services:
+  wssocks:
+    image: yumusb/wssocks:latest
+    restart: always
+    command: client --addr :1080 --remote ws://web.xxxx.com
+    ports:
+      - 127.0.0.1:1080:1080
+    #extra_hosts:
+    #  - "al.p2p.huya.com:1.1.1.1"
